@@ -29,9 +29,12 @@ def read_csv_files(*, data: list[str]) -> list[dict[str, str]]:
     """
     report_data = []
     for file in data:
-        with open(file, newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            report_data.extend(reader)
+        try:
+            with open(file, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                report_data.extend(reader)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Файл {file} не существует или указан неверный путь.")
     return report_data
 
 def create_report(*, data: list[dict[str, str]], report_type: str) -> tuple[list[str], list[list]]:
@@ -43,7 +46,10 @@ def create_report(*, data: list[dict[str, str]], report_type: str) -> tuple[list
     Returns:
         tuple[list[str], list[list]] - готовые данные для рендеринга отчета.
     """
-    report = REPORTS_TYPES[report_type](data=data)
+    try:
+        report = REPORTS_TYPES[report_type](data=data)
+    except KeyError:
+        raise KeyError(f"Неизвестный тип отчета {report_type}")
     return report
 
 def median_coffee_report(*, data: list[dict[str, str]]) -> tuple[list[str], list[list]]:
@@ -105,8 +111,11 @@ def main() -> None:
     """
     parser = create_parser()
     args = parser.parse_args()
-    render = build_report(files=args.files, report_type=args.report)
-    print(render)
+    try:
+        render = build_report(files=args.files, report_type=args.report)
+        print(render)
+    except (FileNotFoundError, KeyError) as error:
+        parser.exit(status=1, message=f"{error}\n")
 
 
 if __name__ == "__main__":
