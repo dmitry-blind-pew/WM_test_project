@@ -5,35 +5,52 @@ from statistics import median
 from tabulate import tabulate
 
 
-def create_parser() -> argparse.Namespace:
+def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument('--files', nargs='+', help='Список файлов')
     parser.add_argument('--report',  help='Название отчёта')
-    args = parser.parse_args()
-    return args
+    return parser
 
-def read_csv(data: list) -> dict[str, list]:
-    all_data = defaultdict(list)
+def read_csv_files(*, data: list) -> list[dict]:
+    report_data = []
     for file in data:
         with open(file, newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
-            for row in reader:
-                all_data[row["student"]].append(row["coffee_spent"])
-    return all_data
+            report_data.extend(reader)
+    return report_data
 
-def data_processing(all_data: dict[str, list]) -> list[list]:
-    res = [[key,median(val)] for key, val in all_data.items()]
-    res.sort(key=lambda x: x[1], reverse=True)
-    return res
+def create_report(*, data: list[dict], report_type: str) -> tuple[list[str], list[list]]:
+    report = REPORTS_TYPES[report_type](data=data)
+    return report
 
-def main():
-    args = create_parser()
-    all_data = read_csv(args.files)
-    result = data_processing(all_data)
+def median_coffee_report(*, data: list[dict]) -> tuple[list[str], list[list]]:
+    report_dict = defaultdict(list)
+    for row in data:
+        report_dict[row["student"]].append(int(row["coffee_spent"]))
+
+    final_report = [[key, median(val)] for key, val in report_dict.items()]
+    final_report.sort(key=lambda x: x[1], reverse=True)
 
     headers = ["student", "median_coffee"]
-    print(tabulate(result, headers=headers, tablefmt='grid'))
+    return (headers, final_report)
+
+
+REPORTS_TYPES = {"median-coffee": median_coffee_report}
+
+
+def render_report(*, report: tuple[list[str], list[list]]) -> str:
+    render = tabulate(report[1], headers=report[0], tablefmt="grid")
+    return render
+
+def main() -> None:
+    parser = create_parser()
+    args = parser.parse_args()
+    report_data = read_csv_files(data=args.files)
+    report = create_report(data=report_data, report_type=args.report)
+    render = render_report(report=report)
+    print(render)
 
 
 if __name__ == "__main__":
     main()
+
