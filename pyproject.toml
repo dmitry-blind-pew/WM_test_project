@@ -1,0 +1,7 @@
+[tool.ruff]
+line-length = 120
+
+[tool.basedpyright]
+include = ["src", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"

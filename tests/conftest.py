@@ -5,6 +5,7 @@ import sys
 
 from src.readers import read_csv_files
 
+
 @pytest.fixture
 def run_cli():
     def _run(files: list[str], report: str):
@@ -16,13 +17,16 @@ def run_cli():
             env={**os.environ, "PYTHONIOENCODING": "utf-8"},
             check=False,
         )
+
     return _run
+
 
 @pytest.fixture
 def empty_csv(tmp_path):
     file = tmp_path / "empty.csv"
     file.write_text("student,date,coffee_spent,sleep_hours,study_hours,mood,exam\n", encoding="utf-8")
     return [str(file)]
+
 
 @pytest.fixture
 def one_row_csv(tmp_path):
@@ -33,6 +37,7 @@ def one_row_csv(tmp_path):
     file = tmp_path / "one_row.csv"
     file.write_text(content, encoding="utf-8")
     return [str(file)]
+
 
 @pytest.fixture
 def standard_csv(tmp_path):
@@ -46,17 +51,21 @@ def standard_csv(tmp_path):
     file.write_text(content, encoding="utf-8")
     return [str(file)]
 
+
 @pytest.fixture
 def two_files(one_row_csv, standard_csv):
     return one_row_csv + standard_csv
+
 
 @pytest.fixture
 def data_one_row(one_row_csv):
     return read_csv_files(data=one_row_csv)
 
+
 @pytest.fixture
 def data_standard(standard_csv):
     return read_csv_files(data=standard_csv)
+
 
 @pytest.fixture
 def data_empty(empty_csv):

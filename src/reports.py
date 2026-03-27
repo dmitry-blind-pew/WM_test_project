@@ -19,6 +19,7 @@ def create_report(*, data: list[dict[str, str]], report_type: str) -> tuple[list
         raise KeyError(f"Неизвестный тип отчета {report_type}")
     return report
 
+
 def median_coffee_report(*, data: list[dict[str, str]]) -> tuple[list[str], list[list]]:
     """
     Из полученных данных отбирает только ФИ студента и данные о тратах на кофе. Формирует медианную сумму трат на кофе.

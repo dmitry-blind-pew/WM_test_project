@@ -1,5 +1,3 @@
-
-
 def test_cli_happy_path(one_row_csv, standard_csv, run_cli):
     result = run_cli(one_row_csv + standard_csv, "median-coffee")
 

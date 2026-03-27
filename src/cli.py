@@ -16,6 +16,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument("--report", required=True, help="Название отчёта")
     return parser
 
+
 def main() -> None:
     """
     Точка входа CLI. Парсит аргументы командной строки, формирует отчёт и выводит его в терминал.

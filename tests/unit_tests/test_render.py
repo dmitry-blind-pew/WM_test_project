@@ -10,7 +10,7 @@ from src.utils import render_report
         (["What to do", "Whom"], [["Hire", "Dmitry Batrak"]]),
         (["What to do", "Whom"], []),
         ([], []),
-    ]
+    ],
 )
 def test_render_report(headers, data):
     expected = tabulate(data, headers=headers, tablefmt="grid")

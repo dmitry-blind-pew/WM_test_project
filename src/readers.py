@@ -8,7 +8,7 @@ def read_csv_files(*, data: list[str]) -> list[dict[str, str]]:
     Args:
         data: list[str] - список с адресами CSV файлов.
     Returns:
-        list[dict[str, str] - список словарей, гдек каждый словарь - строка CSV-файла.
+        list[dict[str, str] - список словарей, где каждый словарь - строка CSV-файла.
     """
     report_data = []
     for file in data:
